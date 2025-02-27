@@ -10,7 +10,7 @@ from .serializers import ConversationSerializer
 from .models import Conversation
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
-
+from django.shortcuts import render
 
 @api_view(['POST'])
 def webhook(request):
@@ -82,3 +82,20 @@ class ConversationDetailView(APIView):
                 {"error": "Failed to retrieve conversation", "details": str(e)},
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+
+def conversation_detail_view(request, conversation_id):
+    """
+    Renders the conversation detail page.
+
+    Parameters:
+        request (HttpRequest): The Django HTTP request object.
+        conversation_id (str): The unique identifier of the conversation.
+
+    Returns:
+        HttpResponse: A rendered HTML page displaying the conversation details..
+    """
+    conversation = get_object_or_404(Conversation, id=conversation_id)
+    return render(request, 'conversation_detail.html', {
+        'conversation': conversation
+    })

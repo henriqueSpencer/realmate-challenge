@@ -1,12 +1,15 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-
 from .serializers import WebhookSerializer
-
 from .handlers import create_conversation, close_conversation, add_message
 from rest_framework.exceptions import ValidationError  # Import from DRF
 from django.core.exceptions import ObjectDoesNotExist  # Import from Django
+
+from .serializers import ConversationSerializer
+from .models import Conversation
+from rest_framework.views import APIView
+from django.shortcuts import get_object_or_404
 
 
 @api_view(['POST'])
@@ -50,3 +53,32 @@ def webhook(request):
             {"error": "Internal server error", "details": str(e)},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
+
+
+
+
+class ConversationDetailView(APIView):
+    """API view to retrieve a single conversation by its ID."""
+    def get(self, request, conversation_id):
+        """
+        Handle GET request to retrieve a specific conversation.
+
+        Parameters:
+            request (Request): The Django REST Framework request object.
+            conversation_id (str): The unique identifier of the conversation.
+
+        Returns:
+            Response: A JSON response containing:
+                - If successful: The serialized conversation data (`200 OK`).
+                - If conversation not found: `404 Not Found`.
+                - If an unexpected error occurs: `400 Bad Request`.
+        """
+        try:
+            conversation = get_object_or_404(Conversation, id=conversation_id)
+            serializer = ConversationSerializer(conversation)
+            return Response(serializer.data)
+        except Exception as e:
+            return Response(
+                {"error": "Failed to retrieve conversation", "details": str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )

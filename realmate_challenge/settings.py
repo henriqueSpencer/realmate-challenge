@@ -28,6 +28,12 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# Celery configurations for asynchronous tasks
+# SQLite only for simplicity in this project, but for production should be changed redis
+CELERY_BROKER_URL = 'sqla+sqlite:///celerydb.sqlite'  # use SQLite as the broker
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_BACKEND = 'db+sqlite:///celerydb.sqlite'  # to save task results
 
 # Application definition
 

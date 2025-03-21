@@ -1,0 +1,59 @@
+
+# Intalei o poetry no PC:
+pip install poetry OU brew install poetry
+
+
+# Verifiquei a versão do poetry:
+poetry --version
+
+# Cria o ambiente virtual
+poetry install
+
+# adiciona uma dependência
+poetry add pacote
+
+# Mostra as informações do ambiente virtual
+poetry env info
+
+# Configura o Poetry para criar o ambiente virtual dentro do projeto
+poetry config virtualenvs.in-project true
+
+# ativa o env do poetry
+poetry env activate
+
+# apagar o env
+poetry env remove python
+
+poetry env use /opt/homebrew/bin/python3
+
+
+# Making migration:
+python manage.py makemigrations chat_service_webhook
+python manage.py migrate chat_service_webhook
+
+python manage.py createsuperuser
+user: henrique
+email: henriquespencer11@gmail.com
+password: henrique
+
+# Celery:
+
+# Install celery
+poetry add celery
+# Intalando dependencias para q o celery funcione com o sqlalchemy
+poetry add sqlalchemy
+# Instalar o Ipython para conseguir utilizar o shell do celery melhor
+poetry add ipython
+
+
+
+# Criar Banco de dado para o celery: # OBS: isso não é mais necessario, hj em dia ele ja cria ao rodar o worker
+# abre o shell
+celery -A realmate_challenge shell
+# Executado dentro do shell
+from celery.backends.database.session import SessionManager
+SessionManager().setup_schema()
+exit()
+# Iniciar o worker celery:
+celery -A realmate_challenge worker --loglevel=info
+
